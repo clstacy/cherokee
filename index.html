@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-D9L7K95G3G"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-D9L7K95G3G');
+  </script>
+  
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cherokee Syllabary</title>
+  <meta name="description" content="Learn Cherokee syllabary by matching transliterations. Practice vowels, consonants, or all symbols." />
+  <meta name="author" content="Carson Stacy" />
+  <meta name="keywords" content="Cherokee, Syllabary, Language Learning, Matching" />
+
+  <style>
+    /* Global Box-Sizing */
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #000000;
+      --accent-color: #2f7a2f;
+      --border-color: #cccccc;
+      --button-bg: #eeeeee;
+      --button-text: #000000;
+      --item-bg: #f9f9f9;
+      --item-text: #000000;
+      --selected-bg: #cce5ff; /* Light Blue */
+      --matched-bg: #a8e6a1;  /* Light Green */
+      --no-match-bg: #f4a7a7; /* Light Red */
+      --stats-bg: transparent;
+      --badge-bg: transparent;
+      --panel-bg: #ffffff;
+      --footer-bg: #fafafa;
+      --active-badge-bg: #d1e7dd; /* Light green for active badge */
+      --inactive-badge-bg: transparent;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-color: #121212;
+        --text-color: #ffffff;
+        --accent-color: #2f7a2f;
+        --border-color: #555555;
+        --button-bg: #333333;
+        --button-text: #ffffff;
+        --item-bg: #1e1e1e;
+        --item-text: #ffffff;
+        --selected-bg: #375a7f;
+        --matched-bg: #2f7a2f;
+        --no-match-bg: #7a2f2f;
+        --stats-bg: transparent;
+        --badge-bg: transparent;
+        --panel-bg: #1e1e1e;
+        --footer-bg: #1a1a1a;
+        --active-badge-bg: #134e4a;
+        --inactive-badge-bg: transparent;
+      }
+    }
+
+    body {
+      font-family: sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: var(--bg-color);
+    }
+    @media (min-width: 769px) {
+      .top-bar {
+        flex-direction: row;
+        align-items: center;
+      }
+      .title-area {
+        flex: 1;
+        text-align: left;
+      }
+      .stats-bar {
+        flex: 2;
+        display: flex;
+        justify-content: flex-start;
+        gap: 10px;
+        padding: 5px 0;
+      }
+    }
+
+    .title-area {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+    }
+    .title-area h1 {
+      font-size: 1.4em;
+      margin: 0;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 5px 0;
+      background: var(--stats-bg);
+      position: relative;
+    }
+
+    .badge-clickable {
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      background: var(--badge-bg);
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-width: 100px;
+      transition: background 0.3s, transform 0.2s;
+    }
+    .badge-clickable:hover {
+      background: var(--selected-bg);
+      transform: scale(1.05);
+    }
+    .badge-clickable.active {
+      background: var(--active-badge-bg);
+    }
+    .badge-clickable span.value {
+      font-weight: bold;
+    }
+
+    .badge-accuracy {
+      border: none;
+      cursor: default;
+      padding: 5px 10px;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      min-width: 100px;
+      background: var(--badge-bg);
+    }
+    .badge-accuracy .value {
+      font-weight: bold;
+    }
+
+    /* Progress container */
+    .progress-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .progress-label {
+      width: 120px;
+      text-align: right;
+    }
+    .progress-bar-container {
+      background: #ccc;
+      width: 120px;
+      height: 10px;
+      border-radius: 5px;
+      position: relative;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: var(--accent-color);
+      width: 0%;
+      height: 100%;
+      border-radius: 5px;
+      transition: width 0.3s;
+    }
+    .progress-percent {
+      font-size: 0.8em;
+      width: 40px;
+      text-align: left;
+    }
+
+    /* Main content */
+    #game-area {
+      padding: 20px;
+      flex: 1 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    #game {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: nowrap;
+      width: 100%;
+    }
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      align-items: center;
+      flex: 1 1 50%;
+      min-width: 0;
+    }
+    .item {
+      background: var(--item-bg);
+      border: 2px solid var(--border-color);
+      width: 100%;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+      position: relative;
+      color: var(--item-text);
+      opacity: 1;
+      transition: background 0.3s, color 0.3s, border 0.3s, transform 0.2s;
+      border-radius: 8px;
+      font-size: 1.2em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .enItem {
+      font-size: 1.4em;
+    }
+    .chItem {
+      font-size: 1.8em;
+    }
+    .selected {
+      background: var(--selected-bg);
+      transform: scale(1.05);
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+    .matched {
+      background: var(--matched-bg) !important;
+      border-color: transparent;
+      color: var(--text-color);
+      animation: fadeIn 0.5s forwards;
+    }
+    .no-match {
+      background: var(--no-match-bg) !important;
+      border-color: transparent;
+      color: var(--text-color);
+      animation: shake 0.3s;
+    }
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(3px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(3px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(1px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .hidden {
+      visibility: hidden;
+    }
+
+    .hamburger-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 999;
+    }
+    .hamburger {
+      width: 20px;
+      height: 18px;
+      position: relative;
+      cursor: pointer;
+    }
+    .hamburger span {
+      display: block;
+      position: absolute;
+      height: 3px;
+      width: 100%;
+      background: var(--text-color);
+      border-radius: 4px;
+      opacity: 1;
+      left: 0;
+      transition: .25s ease-in-out;
+    }
+    .hamburger span:nth-child(1) {
+      top: 0;
+    }
+    .hamburger span:nth-child(2) {
+      top: 7px;
+    }
+    .hamburger span:nth-child(3) {
+      top: 14px;
+    }
+
+    .panel {
+      position: fixed;
+      bottom: -450px;
+      left: 0;
+      width: 100%;
+      background: var(--panel-bg);
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+      padding: 20px;
+      transition: bottom 0.3s;
+      z-index: 998;
+    }
+    .panel.open {
+      bottom: 0;
+    }
+    .panel h2 {
+      margin-top: 0;
+      font-size: 1.2em;
+    }
+    .panel label {
+      display: block;
+      margin: 10px 0;
+      font-size: 1em;
+    }
+    .panel input,
+    .panel select {
+      margin-left: 10px;
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      padding: 5px;
+    }
+    .panel input[type=number] {
+      width: 60px;
+      text-align: center;
+    }
+    .panel button {
+      margin-top: 15px;
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: opacity 0.3s;
+    }
+    .panel button:hover {
+      opacity: 0.9;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content:center;
+      align-items:center;
+      z-index:1000;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: var(--panel-bg);
+      padding: 20px;
+      border-radius:5px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80%;
+      overflow-y: auto;
+      border: 1px solid var(--border-color);
+      position: relative;
+    }
+    .modal h2 {
+      margin-top:0;
+      font-size:1.5em;
+    }
+    .modal .close-btn {
+      background:none;
+      border:none;
+      color: var(--text-color);
+      font-size:1.5em;
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      cursor:pointer;
+    }
+    .answer-list {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top: 20px;
+      justify-content: center;
+    }
+    .answer-list .answer-item {
+      background:var(--item-bg);
+      border:1px solid var(--border-color);
+      border-radius:4px;
+      padding:10px 15px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      font-size:1em;
+      width:100px;
+      transition: background 0.3s, transform 0.2s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .answer-list .answer-item:hover {
+      background: var(--selected-bg);
+      transform: scale(1.05);
+    }
+    .answer-list .answer-item .ch {
+      font-size:1.5em;
+      margin-bottom:5px;
+    }
+    .modal .wiki-link {
+      margin-top:20px;
+      font-size:1em;
+    }
+    .modal .wiki-link a {
+      color: var(--accent-color);
+      text-decoration:none;
+    }
+    .modal .wiki-link a:hover {
+      text-decoration:underline;
+    }
+    .cheat-sheet-buttons {
+      margin-top: 20px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .cheat-sheet-buttons button {
+      /* unify style with banner, answer-key, quiz, reset */
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 1em;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin: 5px;
+      min-width: 120px;
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+    .cheat-sheet-buttons button:hover {
+      background: var(--selected-bg);
+      transform: scale(1.05);
+    }
+
+    /* Unify all the button classes for same styling */
+    .banner-btn,
+    .answer-key-btn,
+    .reset-btn,
+    .quiz-btn {
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      font-size: 1em;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      margin: 5px;
+      min-width: 120px;
+      max-width: 100%;
+      word-wrap: break-word;
+    }
+    .banner-btn:hover,
+    .answer-key-btn:hover,
+    .reset-btn:hover,
+    .quiz-btn:hover {
+      background: var(--selected-bg);
+      transform: scale(1.05);
+    }
+
+    footer {
+      background: var(--footer-bg);
+      color: var(--text-color);
+      padding:15px;
+      font-size:1em;
+      text-align:center;
+      border-top:1px solid var(--border-color);
+      flex-shrink: 0;
+    }
+    footer a {
+      color: var(--accent-color);
+      text-decoration:none;
+    }
+    footer a:hover {
+      text-decoration:underline;
+    }
+    .version-info {
+      font-weight: bold;
+      color: var(--accent-color);
+      margin-left: 5px;
+    }
+
+    #introMessage {
+      display: none;
+      padding: 40px 20px;
+      background: var(--accent-color);
+      color: white;
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: bold;
+      border-radius: 10px;
+      margin: 20px auto;
+      max-width: 600px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="title-area">
+      <h1>Cherokee Syllabary</h1>
+    </div>
+    <div class="stats-bar">
+      <div class="badge-accuracy" id="accuracyBadge">
+        <span>Accuracy:</span><span class="value" id="progressCount">0/0</span>
+      </div>
+      <div class="badge-clickable inactive" id="vowelsBadge">
+        <span>Vowels:</span><span class="value" id="vowelsLearnedCount">0</span>/<span id="vowelsTotal"></span>
+      </div>
+      <div class="badge-clickable inactive" id="consonantsBadge">
+        <span>Consonants:</span><span class="value" id="consonantsLearnedCount">0</span>/<span id="consonantsTotal"></span>
+      </div>
+      <div class="badge-clickable inactive" id="allBadge">
+        <span>All:</span><span class="value" id="allLearnedCount">0</span>/<span id="allTotal"></span>
+      </div>
+      <button id="helpBtn" class="banner-btn" style="font-size:0.9em;">Help</button>
+    </div>
+  </div>
+
+  <!-- PROGRESS BARS -->
+  <div class="progress-section" id="progressSection" style="display:none;">
+    <div class="progress-row">
+      <div class="progress-label">Vowels:</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="vowelProgressFill"></div>
+      </div>
+      <div class="progress-percent" id="vowelProgressText">0%</div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-label">Consonants:</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="consonantProgressFill"></div>
+      </div>
+      <div class="progress-percent" id="consonantProgressText">0%</div>
+    </div>
+    <div class="progress-row">
+      <div class="progress-label">Total:</div>
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="totalProgressFill"></div>
+      </div>
+      <div class="progress-percent" id="totalProgressText">0%</div>
+    </div>
+  </div>
+
+  <!-- BUTTONS UNDER TOP BAR -->
+  <div class="answer-key-container">
+    <button class="answer-key-btn" id="answerKeyBtn">Cheat Sheet</button>
+    <button class="quiz-btn" id="quizBtn">Review / Quiz</button>
+    <button class="reset-btn" id="resetBtn">Reset Progress</button>
+  </div>
+
+  <!-- INTRO MESSAGE / FIRST VISIT -->
+  <div id="introMessage">
+    <div>Click on one to get started!</div>
+    <div>
+      <button id="vowelsBtnBanner" class="banner-btn">VOWELS</button>
+      <button id="consonantsBtnBanner" class="banner-btn">CONSONANTS</button>
+      <button id="allBtnBanner" class="banner-btn">ALL</button>
+    </div>
+    <button class="answer-key-btn" id="answerKeyBtnBanner">Cheat Sheet</button>
+  </div>
+  
+  <!-- MAIN GAME AREA -->
+  <div id="game-area" style="display: none;">
+    <div id="game">
+      <div class="column" id="leftCol"></div>
+      <div class="column" id="rightCol"></div>
+    </div>
+  </div>
+
+  <!-- HAMBURGER MENU FOR ADV SETTINGS -->
+  <div class="hamburger-container">
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+  <!-- ADVANCED SETTINGS PANEL -->
+  <div class="panel" id="settingsPanel">
+    <h2>Advanced Settings</h2>
+    <label>
+      Difficulty:
+      <select id="difficultySelect">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Intermediate</option>
+        <option value="hard">Advanced</option>
+      </select>
+    </label>
+    <label>
+      Initial Active Size:
+      <input id="initialActiveSizeInput" type="number" min="1" value="5"/>
+    </label>
+    <label>
+      Well Learned Threshold:
+      <input id="wellLearnedThresholdInput" type="number" min="1" value="5"/>
+    </label>
+    <label>
+      Phase Up Threshold (0-1):
+      <input id="phaseUpThresholdInput" type="number" step="0.05" min="0" max="1" value="0.75"/>
+    </label>
+    <label>
+      Phase Add Count:
+      <input id="phaseAddCountInput" type="number" min="1" value="5"/>
+    </label>
+    <label>
+      Round Size:
+      <input id="roundSizeInput" type="number" min="1" value="5"/>
+    </label><br/>
+    <button id="applySettingsBtn">Apply Settings</button>
+  </div>
+
+  <!-- CHEAT SHEET & HELP MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <button class="close-btn" id="closeModalBtn">&times;</button>
+      <h2 id="modalTitle">Cheat Sheet</h2>
+      <p id="modalMessage">All Cherokee symbols and their transliterations:</p>
+      
+      <div id="cheatSheetContent">
+        <div class="cheat-sheet-buttons">
+          <button id="showVowelsBtn">Vowels</button>
+          <button id="showConsonantsBtn">Consonants</button>
+          <button id="showAllBtn">All</button>
+        </div>
+        <div class="answer-list" id="answerList"></div>
+
+        <div class="pronunciation-guide" style="text-align:left; margin-top:20px;">
+          <h3 style="margin-bottom:5px;">Cherokee Vowel & Consonant Sounds (Tips)</h3>
+          <h4 style="margin-bottom:5px;">SOUNDS REPRESENTED BY VOWELS:</h4>
+          <ul style="margin-left:20px;">
+            <li><strong>a</strong>: as “a” in <em>father</em>, or short as “a” in <em>rival</em></li>
+            <li><strong>e</strong>: as “a” in <em>plate</em>, or short as “e” in <em>met</em></li>
+            <li><strong>i</strong>: as “i” in <em>pique</em>, or short as “i” in <em>pit</em></li>
+            <li><strong>o</strong>: as “o” in <em>note</em>, approaching “aw” in <em>law</em></li>
+            <li><strong>u</strong>: as “oo” in <em>fool</em>, or short as “u” in <em>pull</em></li>
+            <li><strong>v</strong>: as “u” in <em>but</em>, nasalized</li>
+          </ul>
+
+          <h4 style="margin-bottom:5px;">CONSONANT SOUNDS:</h4>
+          <p style="margin-left:20px;">
+            ‘g’ is nearly as in English, but approaching ‘k’. ‘d’ nearly as in English, but approaching ‘t’.<br/>
+            ‘h,’ ‘k,’ ‘l,’ ‘m,’ ‘n,’ ‘q,’ ‘s,’ ‘t,’ ‘w,’ and ‘y’ as in English. <br/>
+            Syllables beginning with ‘g’ (except ‘ga’) sometimes have the power of ‘k.’ <br/>
+            ‘go,’ ‘du,’ and ‘dv’ are sometimes sounded ‘to,’ ‘tu,’ and ‘tv.’ <br/>
+            Syllables written with ‘tl’ (except ‘tla’) sometimes vary to ‘dl.’
+          </p>
+        </div>
+
+        <div class="wiki-link">
+          Learn more about the Cherokee syllabary: 
+          <a href="https://en.wikipedia.org/wiki/Cherokee_syllabary" target="_blank">Wikipedia</a>
+        </div>
+      </div>
+
+      <div id="helpContent" style="display: none;">
+        <p>1. Choose a set (Vowels, Consonants, or All) to begin.</p>
+        <p>2. Click a transliteration on the left, then the matching Cherokee symbol on the right.</p>
+        <p>3. Track your <strong>accuracy</strong> and unlock review/quiz after some practice!</p>
+        <button id="startPlayingBtn" class="banner-btn">Start Learning</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ MODAL -->
+  <div class="modal-overlay" id="quizOverlay">
+    <div class="modal">
+      <button class="close-btn" id="closeQuizBtn">&times;</button>
+      <h2>Review / Quiz</h2>
+      <div id="quizContent">
+        <div class="quiz-question" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-result" id="quizResult"></div>
+        <button id="nextQuestionBtn" class="banner-btn" style="margin-top:10px;">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Made by <a href="https://clstacy.github.io" target="_blank">Carson Stacy</a> • 
+    Source code: <a href="https://github.com/clstacy/cherokee" target="_blank">GitHub</a> •
+    <span class="version-info" id="versionDisplay">v0.1.0</span>
+  </footer>
+
+  <script>
+    /***************************************************
+     * CHEROKEE DATA: Vowels vs. Consonants
+     ***************************************************/
+    const vowels = [
+      { en: 'a', ch: 'Ꭰ' },
+      { en: 'e', ch: 'Ꭱ' },
+      { en: 'i', ch: 'Ꭲ' },
+      { en: 'o', ch: 'Ꭳ' },
+      { en: 'u', ch: 'Ꭴ' },
+      { en: 'v', ch: 'Ꭵ' }
+    ];
+
+    const consonants = [
+      { en: 'ga', ch: 'Ꭶ' }, { en: 'ka', ch: 'Ꭷ' },
+      { en: 'ge', ch: 'Ꭸ' }, { en: 'gi', ch: 'Ꭹ' },
+      { en: 'go', ch: 'Ꭺ' }, { en: 'gu', ch: 'Ꭻ' },
+      { en: 'gv', ch: 'Ꭼ' },
+
+      { en: 'ha', ch: 'Ꭽ' }, { en: 'he', ch: 'Ꭾ' },
+      { en: 'hi', ch: 'Ꭿ' }, { en: 'ho', ch: 'Ꮀ' },
+      { en: 'hu', ch: 'Ꮁ' }, { en: 'hv', ch: 'Ꮂ' },
+
+      { en: 'la', ch: 'Ꮃ' }, { en: 'le', ch: 'Ꮄ' },
+      { en: 'li', ch: 'Ꮅ' }, { en: 'lo', ch: 'Ꮆ' },
+      { en: 'lu', ch: 'Ꮇ' }, { en: 'lv', ch: 'Ꮈ' },
+
+      { en: 'ma', ch: 'Ꮉ' }, { en: 'me', ch: 'Ꮊ' },
+      { en: 'mi', ch: 'Ꮋ' }, { en: 'mo', ch: 'Ꮌ' },
+      { en: 'mu', ch: 'Ꮍ' }, { en: 'mv', ch: 'Ᏽ' },
+
+      { en: 'na', ch: 'Ꮎ' }, { en: 'hna', ch: 'Ꮏ' },
+      { en: 'nah', ch: 'Ꮐ' }, { en: 'ne', ch: 'Ꮑ' },
+      { en: 'ni', ch: 'Ꮒ' }, { en: 'no', ch: 'Ꮓ' },
+      { en: 'nu', ch: 'Ꮔ' }, { en: 'nv', ch: 'Ꮕ' },
+
+      { en: 'qua', ch: 'Ꮖ' }, { en: 'que', ch: 'Ꮗ' },
+      { en: 'qui', ch: 'Ꮘ' }, { en: 'quo', ch: 'Ꮙ' },
+      { en: 'quu', ch: 'Ꮚ' }, { en: 'quv', ch: 'Ꮛ' },
+
+      { en: 'sa', ch: 'Ꮜ' }, { en: 's', ch: 'Ꮝ' },
+      { en: 'se', ch: 'Ꮞ' }, { en: 'si', ch: 'Ꮟ' },
+      { en: 'so', ch: 'Ꮠ' }, { en: 'su', ch: 'Ꮡ' },
+      { en: 'sv', ch: 'Ꮢ' },
+
+      { en: 'da', ch: 'Ꮣ' }, { en: 'ta', ch: 'Ꮤ' },
+      { en: 'de', ch: 'Ꮥ' }, { en: 'te', ch: 'Ꮦ' },
+      { en: 'di', ch: 'Ꮧ' }, { en: 'ti', ch: 'Ꮨ' },
+      { en: 'do', ch: 'Ꮩ' }, { en: 'du', ch: 'Ꮪ' },
+      { en: 'dv', ch: 'Ꮫ' },
+
+      { en: 'dla', ch: 'Ꮬ' }, { en: 'tla', ch: 'Ꮭ' },
+      { en: 'tle', ch: 'Ꮮ' }, { en: 'tli', ch: 'Ꮯ' },
+      { en: 'tlo', ch: 'Ꮰ' }, { en: 'tlu', ch: 'Ꮱ' },
+      { en: 'tlv', ch: 'Ꮲ' },
+
+      { en: 'tsa', ch: 'Ꮳ' }, { en: 'tse', ch: 'Ꮴ' },
+      { en: 'tsi', ch: 'Ꮵ' }, { en: 'tso', ch: 'Ꮶ' },
+      { en: 'tsu', ch: 'Ꮷ' }, { en: 'tsv', ch: 'Ꮸ' },
+
+      { en: 'wa', ch: 'Ꮹ' }, { en: 'we', ch: 'Ꮺ' },
+      { en: 'wi', ch: 'Ꮻ' }, { en: 'wo', ch: 'Ꮼ' },
+      { en: 'wu', ch: 'Ꮽ' }, { en: 'wv', ch: 'Ꮾ' },
+
+      { en: 'ya', ch: 'Ꮿ' }, { en: 'ye', ch: 'Ᏸ' },
+      { en: 'yi', ch: 'Ᏹ' }, { en: 'yo', ch: 'Ᏺ' },
+      { en: 'yu', ch: 'Ᏻ' }, { en: 'yv', ch: 'Ᏼ' }
+    ];
+
+    let initialActiveSize = 5;
+    let WELL_LEARNED_THRESHOLD = 5;
+    let PHASE_UP_THRESHOLD = 0.75;
+    let PHASE_ADD_COUNT = 5;
+    let ROUND_SIZE = 5;
+
+    let currentSet = [];
+    let allLetters = [];
+    let activeSet = [];
+    let remainingLetters = [];
+    let guessCounts = {};
+    let selectedEn = null;
+    let selectedCh = null;
+
+    let attempts = 0;
+    let matches = 0;
+    let matchedPairs = 0;
+    let learnedVowels = new Set();
+    let learnedConsonants = new Set();
+
+    const progressCount = document.getElementById('progressCount');
+    const vowelsLearnedCount = document.getElementById('vowelsLearnedCount');
+    const consonantsLearnedCount = document.getElementById('consonantsLearnedCount');
+    const vowelsTotal = document.getElementById('vowelsTotal');
+    const consonantsTotal = document.getElementById('consonantsTotal');
+    const vowelsBadge = document.getElementById('vowelsBadge');
+    const consonantsBadge = document.getElementById('consonantsBadge');
+    const allBadge = document.getElementById('allBadge');
+
+    const vowelsBtnBanner = document.getElementById('vowelsBtnBanner');
+    const consonantsBtnBanner = document.getElementById('consonantsBtnBanner');
+    const allBtnBanner = document.getElementById('allBtnBanner');
+
+    const introMessage = document.getElementById('introMessage');
+    const answerKeyBtn = document.getElementById('answerKeyBtn');
+    const answerKeyBtnBanner = document.getElementById('answerKeyBtnBanner');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const answerList = document.getElementById('answerList');
+    const resetBtn = document.getElementById('resetBtn');
+    const versionDisplay = document.getElementById('versionDisplay');
+
+    const showVowelsBtn = document.getElementById('showVowelsBtn');
+    const showConsonantsBtn = document.getElementById('showConsonantsBtn');
+    const showAllBtn = document.getElementById('showAllBtn');
+
+    const difficultySelect = document.getElementById('difficultySelect');
+    const initialActiveSizeInput = document.getElementById('initialActiveSizeInput');
+    const wellLearnedThresholdInput = document.getElementById('wellLearnedThresholdInput');
+    const phaseUpThresholdInput = document.getElementById('phaseUpThresholdInput');
+    const phaseAddCountInput = document.getElementById('phaseAddCountInput');
+    const roundSizeInput = document.getElementById('roundSizeInput');
+
+    const progressSection = document.getElementById('progressSection');
+    const vowelProgressFill = document.getElementById('vowelProgressFill');
+    const consonantProgressFill = document.getElementById('consonantProgressFill');
+    const totalProgressFill = document.getElementById('totalProgressFill');
+    const vowelProgressText = document.getElementById('vowelProgressText');
+    const consonantProgressText = document.getElementById('consonantProgressText');
+    const totalProgressText = document.getElementById('totalProgressText');
+
+    const helpBtn = document.getElementById('helpBtn');
+    const helpContent = document.getElementById('helpContent');
+    const cheatSheetContent = document.getElementById('cheatSheetContent');
+    const startPlayingBtn = document.getElementById('startPlayingBtn');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+
+    const quizBtn = document.getElementById('quizBtn');
+    const quizOverlay = document.getElementById('quizOverlay');
+    const closeQuizBtn = document.getElementById('closeQuizBtn');
+    const quizQuestion = document.getElementById('quizQuestion');
+    const quizOptions = document.getElementById('quizOptions');
+    const quizResult = document.getElementById('quizResult');
+    const nextQuestionBtn = document.getElementById('nextQuestionBtn');
+    let quizPool = [];
+    let quizIndex = 0;
+
+    /* Initialize totals */
+    vowelsTotal.textContent = vowels.length;
+    consonantsTotal.textContent = consonants.length;
+    allBadge.innerHTML = `<span>All:</span><span class="value" id="allLearnedCount">0</span>/<span id="allTotal">${vowels.length + consonants.length}</span>`;
+
+    /* EVENT LISTENERS */
+    vowelsBadge.addEventListener('click', () => { 
+      currentSet = vowels; 
+      switchSet('vowels');
+    });
+    consonantsBadge.addEventListener('click', () => {
+      currentSet = consonants;
+      switchSet('consonants');
+    });
+    allBadge.addEventListener('click', () => {
+      currentSet = vowels.concat(consonants);
+      switchSet('all');
+    });
+
+    vowelsBtnBanner.addEventListener('click', () => {
+      currentSet = vowels;
+      switchSet('vowels');
+      hideIntroMessage();
+    });
+    consonantsBtnBanner.addEventListener('click', () => {
+      currentSet = consonants;
+      switchSet('consonants');
+      hideIntroMessage();
+    });
+    allBtnBanner.addEventListener('click', () => {
+      currentSet = vowels.concat(consonants);
+      switchSet('all');
+      hideIntroMessage();
+    });
+
+    if (answerKeyBtnBanner) {
+      answerKeyBtnBanner.addEventListener('click', () => {
+        openCheatSheetModal();
+      });
+    }
+    answerKeyBtn.addEventListener('click', () => {
+      openCheatSheetModal();
+    });
+
+    closeModalBtn.addEventListener('click', () => {
+      modalOverlay.classList.remove('active');
+    });
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) {
+        modalOverlay.classList.remove('active');
+      }
+    });
+
+    showVowelsBtn.addEventListener('click', () => {
+      populateAnswerList('vowels');
+    });
+    showConsonantsBtn.addEventListener('click', () => {
+      populateAnswerList('consonants');
+    });
+    showAllBtn.addEventListener('click', () => {
+      populateAnswerList('all');
+    });
+
+    helpBtn.addEventListener('click', () => {
+      modalTitle.textContent = "How To Play";
+      modalMessage.style.display = "none";
+      cheatSheetContent.style.display = "none";
+      helpContent.style.display = "block";
+      modalOverlay.classList.add('active');
+    });
+    startPlayingBtn.addEventListener('click', () => {
+      modalOverlay.classList.remove('active');
+    });
+
+    quizBtn.addEventListener('click', () => {
+      startQuiz();
+    });
+    closeQuizBtn.addEventListener('click', () => {
+      quizOverlay.classList.remove('active');
+    });
+    quizOverlay.addEventListener('click', (e) => {
+      if (e.target === quizOverlay) {
+        quizOverlay.classList.remove('active');
+      }
+    });
+    nextQuestionBtn.addEventListener('click', loadNextQuizQuestion);
+
+    difficultySelect.addEventListener('change', () => {
+      applyDifficultySettings();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      const confirmReset = confirm("Are you sure you want to reset your progress?");
+      if (confirmReset) {
+        localStorage.removeItem('cherokeeprogress');
+        attempts = 0;
+        matches = 0;
+        guessCounts = {};
+        learnedVowels.clear();
+        learnedConsonants.clear();
+        activeSet = [];
+        remainingLetters = [];
+        currentSet = [];
+        allLetters = [];
+        updateStats();
+        setActiveBadge(null);
+        document.getElementById('game-area').style.display = 'none';
+        introMessage.style.display = 'flex';
+        updateProgressBars();
+      }
+    });
+
+    const hamburger = document.getElementById('hamburger');
+    const settingsPanel = document.getElementById('settingsPanel');
+    let panelOpen = false;
+    hamburger.addEventListener('click', () => {
+      panelOpen = !panelOpen;
+      settingsPanel.classList.toggle('open', panelOpen);
+    });
+
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('enItem') && !e.target.classList.contains('hidden')) {
+        if (selectedEn) selectedEn.classList.remove('selected');
+        selectedEn = e.target;
+        selectedEn.classList.add('selected');
+      } else if (e.target.classList.contains('chItem') && !e.target.classList.contains('hidden')) {
+        if (selectedCh) selectedCh.classList.remove('selected');
+        selectedCh = e.target;
+        selectedCh.classList.add('selected');
+      }
+      checkMatch();
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const isFirstTime = !localStorage.getItem('cherokeeprogress');
+      if (isFirstTime) {
+        introMessage.style.display = 'flex';
+        document.getElementById('game-area').style.display = 'none';
+        localStorage.setItem('cherokeeprogress', 'true');
+      } else {
+        introMessage.style.display = 'none';
+        document.getElementById('game-area').style.display = 'flex';
+        if (!loadProgress()) {
+          // No saved progress
+        } else {
+          setActiveBadge(getCurrentSetType());
+          adjustActiveSetForCurrentSet();
+          loadNewRound();
+        }
+      }
+      displayVersion();
+      updateProgressBars();
+    });
+
+    /* CORE FUNCTIONS */
+    function switchSet(setType) {
+      setActiveBadge(setType);
+      if (setType === 'vowels') {
+        currentSet = vowels;
+      } else if (setType === 'consonants') {
+        currentSet = consonants;
+      } else {
+        currentSet = vowels.concat(consonants);
+      }
+      adjustActiveSetForCurrentSet();
+      loadNewRound();
+      saveProgress();
+      document.getElementById('game-area').style.display = 'flex';
+      hideIntroMessage();
+      progressSection.style.display = 'block';
+    }
+
+    function hideIntroMessage() {
+      if (introMessage) {
+        introMessage.style.display = 'none';
+        document.getElementById('game-area').style.display = 'flex';
+      }
+    }
+
+    function setActiveBadge(setType) {
+      vowelsBadge.classList.remove('active');
+      consonantsBadge.classList.remove('active');
+      allBadge.classList.remove('active');
+
+      vowelsBadge.classList.add('inactive');
+      consonantsBadge.classList.add('inactive');
+      allBadge.classList.add('inactive');
+
+      if (setType === 'vowels') {
+        vowelsBadge.classList.remove('inactive');
+        vowelsBadge.classList.add('active');
+      } else if (setType === 'consonants') {
+        consonantsBadge.classList.remove('inactive');
+        consonantsBadge.classList.add('active');
+      } else {
+        allBadge.classList.remove('inactive');
+        allBadge.classList.add('active');
+      }
+    }
+
+    function adjustActiveSetForCurrentSet() {
+      currentSet.forEach(l => {
+        if (guessCounts[l.ch] == null) guessCounts[l.ch] = 0;
+      });
+      activeSet = activeSet.filter(l => currentSet.some(cl => cl.ch === l.ch));
+      allLetters = [...currentSet];
+
+      const usedChs = new Set(activeSet.map(l => l.ch));
+      let unused = currentSet.filter(l => !usedChs.has(l.ch));
+      remainingLetters = unused;
+      shuffle(remainingLetters);
+
+      if (activeSet.length < initialActiveSize) {
+        const needed = initialActiveSize - activeSet.length;
+        const toAdd = remainingLetters.slice(0, needed);
+        activeSet = activeSet.concat(toAdd);
+        remainingLetters = remainingLetters.slice(toAdd.length);
+      }
+    }
+
+    function loadNewRound() {
+      selectedEn = null;
+      selectedCh = null;
+      matchedPairs = 0;
+
+      const maxRoundSize = Math.min(ROUND_SIZE, activeSet.length);
+      const chosen = getWeightedRandomSubset(activeSet, maxRoundSize);
+
+      const leftCol = document.getElementById('leftCol');
+      const rightCol = document.getElementById('rightCol');
+
+      leftCol.innerHTML = '';
+      rightCol.innerHTML = '';
+
+      const enList = shuffle([...chosen]);
+      const chList = shuffle([...chosen]);
+
+      enList.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'item enItem';
+        div.textContent = p.en;
+        div.dataset.match = p.ch;
+        leftCol.appendChild(div);
+      });
+
+      chList.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'item chItem';
+        div.textContent = p.ch;
+        div.dataset.match = p.ch;
+        rightCol.appendChild(div);
+      });
+
+      saveProgress();
+      updateProgressBars();
+    }
+
+    function checkMatch() {
+      if (selectedEn && selectedCh) {
+        attempts++;
+        updateStats();
+        if (selectedEn.dataset.match === selectedCh.dataset.match) {
+          matches++;
+          matchedPairs++;
+          const cherokeeSymbol = selectedCh.dataset.match;
+          onCorrectMatch(cherokeeSymbol);
+
+          if (vowels.some(v => v.ch === cherokeeSymbol)) {
+            learnedVowels.add(cherokeeSymbol);
+          } else if (consonants.some(c => c.ch === cherokeeSymbol)) {
+            learnedConsonants.add(cherokeeSymbol);
+          }
+          updateStats();
+          updateProgressBars();
+
+          selectedEn.classList.add('matched');
+          selectedCh.classList.add('matched');
+          selectedEn.classList.add('hidden');
+          selectedCh.classList.add('hidden');
+          selectedEn = null;
+          selectedCh = null;
+
+          if (matchedPairs === ROUND_SIZE) {
+            loadNewRound();
+          }
+        } else {
+          selectedEn.classList.add('no-match');
+          selectedCh.classList.add('no-match');
+          setTimeout(() => {
+            selectedEn.classList.remove('selected', 'no-match');
+            selectedCh.classList.remove('selected', 'no-match');
+            selectedEn = null;
+            selectedCh = null;
+          }, 500);
+        }
+        saveProgress();
+      }
+    }
+
+    function onCorrectMatch(chSymbol) {
+      guessCounts[chSymbol] = (guessCounts[chSymbol] || 0) + 1;
+      const wellLearnedCount = activeSet.filter(l => guessCounts[l.ch] >= WELL_LEARNED_THRESHOLD).length;
+      if ((wellLearnedCount / activeSet.length) >= PHASE_UP_THRESHOLD) {
+        if (remainingLetters.length > 0) {
+          shuffle(remainingLetters);
+          const toAdd = remainingLetters.slice(0, PHASE_ADD_COUNT);
+          activeSet = activeSet.concat(toAdd);
+          remainingLetters = remainingLetters.slice(toAdd.length);
+        }
+      }
+      saveProgress();
+    }
+
+    function getWeightedRandomSubset(letterArray, n) {
+      let availableLetters = [...letterArray];
+      let chosen = [];
+
+      for (let i = 0; i < n && availableLetters.length > 0; i++) {
+        let totalWeight = 0;
+        availableLetters.forEach(l => {
+          totalWeight += 1 / (1 + (guessCounts[l.ch] || 0));
+        });
+        const r = Math.random() * totalWeight;
+        let cumulative = 0;
+        let selectedIndex = -1;
+
+        for (let j = 0; j < availableLetters.length; j++) {
+          cumulative += 1 / (1 + (guessCounts[availableLetters[j].ch] || 0));
+          if (r <= cumulative) {
+            selectedIndex = j;
+            break;
+          }
+        }
+        if (selectedIndex !== -1) {
+          const selectedLetter = availableLetters.splice(selectedIndex, 1)[0];
+          chosen.push(selectedLetter);
+        }
+      }
+      return chosen;
+    }
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random()*(i+1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function applyDifficultySettings() {
+      const difficulty = difficultySelect.value;
+      if (difficulty === 'easy') {
+        initialActiveSizeInput.value = 3;
+        wellLearnedThresholdInput.value = 3;
+        phaseUpThresholdInput.value = 0.7;
+        phaseAddCountInput.value = 2;
+        roundSizeInput.value = 3;
+      } else if (difficulty === 'medium') {
+        initialActiveSizeInput.value = 5;
+        wellLearnedThresholdInput.value = 5;
+        phaseUpThresholdInput.value = 0.75;
+        phaseAddCountInput.value = 5;
+        roundSizeInput.value = 5;
+      } else if (difficulty === 'hard') {
+        initialActiveSizeInput.value = 7;
+        wellLearnedThresholdInput.value = 7;
+        phaseUpThresholdInput.value = 0.8;
+        phaseAddCountInput.value = 7;
+        roundSizeInput.value = 7;
+      }
+    }
+
+    function setUserParameters() {
+      if (initialActiveSizeInput.value) initialActiveSize = parseInt(initialActiveSizeInput.value);
+      if (wellLearnedThresholdInput.value) WELL_LEARNED_THRESHOLD = parseInt(wellLearnedThresholdInput.value);
+      if (phaseUpThresholdInput.value) PHASE_UP_THRESHOLD = parseFloat(phaseUpThresholdInput.value);
+      if (phaseAddCountInput.value) PHASE_ADD_COUNT = parseInt(phaseAddCountInput.value);
+      if (roundSizeInput.value) ROUND_SIZE = parseInt(roundSizeInput.value);
+    }
+
+    function saveProgress() {
+      const data = {
+        attempts,
+        matches,
+        guessCounts,
+        learnedVowels: Array.from(learnedVowels),
+        learnedConsonants: Array.from(learnedConsonants),
+        activeSet: activeSet.map(l => ({ en: l.en, ch: l.ch })),
+        allLetters: allLetters.map(l => ({ en: l.en, ch: l.ch })),
+        remainingLetters: remainingLetters.map(l => ({ en: l.en, ch: l.ch })),
+        currentSetType: getCurrentSetType(),
+        initialActiveSize,
+        WELL_LEARNED_THRESHOLD,
+        PHASE_UP_THRESHOLD,
+        PHASE_ADD_COUNT,
+        ROUND_SIZE,
+        difficulty: difficultySelect.value
+      };
+      localStorage.setItem('cherokeeprogress', JSON.stringify(data));
+    }
+
+    function loadProgress() {
+      const dataStr = localStorage.getItem('cherokeeprogress');
+      if (!dataStr) return false;
+      const data = JSON.parse(dataStr);
+      attempts = data.attempts || 0;
+      matches = data.matches || 0;
+      guessCounts = data.guessCounts || {};
+      learnedVowels = new Set(data.learnedVowels || []);
+      learnedConsonants = new Set(data.learnedConsonants || []);
+
+      let setType = data.currentSetType;
+      if (setType === 'vowels') {
+        currentSet = vowels;
+      } else if (setType === 'consonants') {
+        currentSet = consonants;
+      } else {
+        currentSet = vowels.concat(consonants);
+      }
+
+      allLetters = (data.allLetters || []).map(l => findLetterObject(l));
+      activeSet = (data.activeSet || []).map(l => findLetterObject(l));
+      remainingLetters = (data.remainingLetters || []).map(l => findLetterObject(l));
+
+      initialActiveSize = data.initialActiveSize || initialActiveSize;
+      WELL_LEARNED_THRESHOLD = data.WELL_LEARNED_THRESHOLD || WELL_LEARNED_THRESHOLD;
+      PHASE_UP_THRESHOLD = data.PHASE_UP_THRESHOLD || PHASE_UP_THRESHOLD;
+      PHASE_ADD_COUNT = data.PHASE_ADD_COUNT || PHASE_ADD_COUNT;
+      ROUND_SIZE = data.ROUND_SIZE || ROUND_SIZE;
+
+      if (data.difficulty) {
+        difficultySelect.value = data.difficulty;
+      }
+
+      updateParameterInputs();
+      updateStats();
+      updateProgressBars();
+      return true;
+    }
+
+    function getCurrentSetType() {
+      if (currentSet.length === vowels.length && currentSet.every(l => vowels.some(v => v.ch === l.ch))) {
+        return 'vowels';
+      }
+      if (currentSet.length === consonants.length && currentSet.every(l => consonants.some(c => c.ch === l.ch))) {
+        return 'consonants';
+      }
+      if (currentSet.length === vowels.length + consonants.length) {
+        return 'all';
+      }
+      return 'all';
+    }
+
+    function findLetterObject({ en, ch }) {
+      const all = vowels.concat(consonants);
+      if (ch) {
+        const byCh = all.find(x => x.ch === ch);
+        if (byCh) return byCh;
+      }
+      return all.find(x => x.en === en && x.ch === ch) || { en, ch };
+    }
+
+    function updateParameterInputs() {
+      initialActiveSizeInput.value = initialActiveSize;
+      wellLearnedThresholdInput.value = WELL_LEARNED_THRESHOLD;
+      phaseUpThresholdInput.value = PHASE_UP_THRESHOLD;
+      phaseAddCountInput.value = PHASE_ADD_COUNT;
+      roundSizeInput.value = ROUND_SIZE;
+    }
+
+    function updateStats() {
+      if (progressCount) {
+        progressCount.textContent = `${matches}/${attempts}`;
+      }
+      vowelsLearnedCount.textContent = learnedVowels.size;
+      consonantsLearnedCount.textContent = learnedConsonants.size;
+      document.getElementById('allLearnedCount').textContent = learnedVowels.size + learnedConsonants.size;
+    }
+
+    function updateProgressBars() {
+      const vowelCount = vowels.length;
+      const consonantCount = consonants.length;
+      const totalCount = vowelCount + consonantCount;
+
+      const vowelLearned = learnedVowels.size;
+      const consonantLearned = learnedConsonants.size;
+      const totalLearned = vowelLearned + consonantLearned;
+
+      const vowelPercent = (vowelLearned / vowelCount) * 100;
+      const consonantPercent = (consonantLearned / consonantCount) * 100;
+      const totalPercent = (totalLearned / totalCount) * 100;
+
+      vowelProgressFill.style.width = vowelPercent + '%';
+      vowelProgressText.textContent = Math.round(vowelPercent) + '%';
+
+      consonantProgressFill.style.width = consonantPercent + '%';
+      consonantProgressText.textContent = Math.round(consonantPercent) + '%';
+
+      totalProgressFill.style.width = totalPercent + '%';
+      totalProgressText.textContent = Math.round(totalPercent) + '%';
+    }
+
+    function displayVersion() {
+      const version = "v0.1.0";
+      if (versionDisplay) {
+        versionDisplay.textContent = version;
+      }
+      const githubRepo = "clstacy/cherokee";
+      fetch(`https://api.github.com/repos/${githubRepo}/releases/latest`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.tag_name) {
+            versionDisplay.textContent = data.tag_name;
+          }
+        })
+        .catch(error => {
+          console.error("Error fetching version from GitHub:", error);
+        });
+    }
+
+    function openCheatSheetModal() {
+      modalTitle.textContent = "Cheat Sheet";
+      modalMessage.style.display = "block";
+      cheatSheetContent.style.display = "block";
+      helpContent.style.display = "none";
+      modalOverlay.classList.add('active');
+      populateAnswerList('all');
+    }
+
+    function populateAnswerList(filter = 'all') {
+      answerList.innerHTML = '';
+      let lettersToDisplay = [];
+      if (filter === 'vowels') {
+        lettersToDisplay = vowels;
+      } else if (filter === 'consonants') {
+        lettersToDisplay = consonants;
+      } else {
+        lettersToDisplay = vowels.concat(consonants);
+      }
+
+      lettersToDisplay.forEach(l => {
+        const div = document.createElement('div');
+        div.className = 'answer-item';
+
+        const chDiv = document.createElement('div');
+        chDiv.className = 'ch';
+        chDiv.textContent = l.ch;
+
+        const enDiv = document.createElement('div');
+        enDiv.textContent = l.en;
+
+        div.appendChild(chDiv);
+        div.appendChild(enDiv);
+        answerList.appendChild(div);
+      });
+    }
+
+    function startQuiz() {
+      quizPool = Array.from(learnedVowels).concat(Array.from(learnedConsonants));
+      if (quizPool.length === 0) {
+        alert("You haven't learned any symbols yet! Match some symbols first.");
+        return;
+      }
+      shuffle(quizPool);
+      quizIndex = 0;
+      quizOverlay.classList.add('active');
+      loadNextQuizQuestion();
+    }
+
+    function loadNextQuizQuestion() {
+      quizResult.textContent = "";
+      quizOptions.innerHTML = "";
+
+      if (quizIndex >= quizPool.length) {
+        quizQuestion.textContent = "Review complete!";
+        nextQuestionBtn.textContent = "Close";
+        nextQuestionBtn.onclick = () => {
+          quizOverlay.classList.remove('active');
+          nextQuestionBtn.onclick = loadNextQuizQuestion;
+          nextQuestionBtn.textContent = "Next";
+        };
+        return;
+      }
+
+      const currentCherokee = quizPool[quizIndex];
+      quizQuestion.textContent = `Which transliteration matches "${currentCherokee}"?`;
+
+      const letterObj = findLetterObject({ ch: currentCherokee });
+      let correctEn = letterObj.en || "UNKNOWN";
+
+      let possibleAnswers = [];
+      possibleAnswers.push(correctEn);
+
+      const allEnglish = vowels.concat(consonants).map(item => item.en).filter(x => x !== correctEn);
+      shuffle(allEnglish);
+      possibleAnswers.push(...allEnglish.slice(0, 3));
+      shuffle(possibleAnswers);
+
+      possibleAnswers.forEach(ans => {
+        const btn = document.createElement('button');
+        btn.className = 'banner-btn';
+        btn.textContent = ans;
+        btn.addEventListener('click', () => {
+          if (ans === correctEn) {
+            quizResult.textContent = "Correct!";
+            quizResult.style.color = "green";
+          } else {
+            quizResult.textContent = `Wrong! The correct answer is "${correctEn}".`;
+            quizResult.style.color = "red";
+          }
+        });
+        quizOptions.appendChild(btn);
+      });
+
+      quizIndex++;
+    }
+  </script>
+</body>
+</html>
